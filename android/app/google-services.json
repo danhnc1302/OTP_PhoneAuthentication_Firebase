@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "479223997261",
+    "project_id": "otpauthentication-46bdb",
+    "storage_bucket": "otpauthentication-46bdb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:479223997261:android:ed5e0c58e74fc126718d04",
+        "android_client_info": {
+          "package_name": "com.otp_phoneauthentication_firebase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjdPS9YkYObWA1l62CZSR9BK3z1XmEjnI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
