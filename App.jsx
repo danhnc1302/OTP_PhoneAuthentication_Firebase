@@ -1,27 +1,15 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import AppNavigation from "./src/navigation"
+import { StatusBar } from 'react-native';
 
 function App() {
 
   return (
-    <View style={{
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center'
-    }}>
-      <Text>Danh</Text>
-    </View>
+    <>
+      <AppNavigation />
+      <StatusBar backgroundColor="#F4F2FA" barStyle="dark-content" />
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-});
 
 export default App;
