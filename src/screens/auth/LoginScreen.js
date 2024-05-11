@@ -8,12 +8,16 @@ import {
 import Icon from 'react-native-vector-icons/AntDesign';
 import RNPhoneInput from "react-native-phone-number-input";
 import { theme } from '../../../theme';
+import { useNavigation } from '@react-navigation/native';
 
 const LoginScreen = () => {
     const [phoneNumber, setPhoneNumber] = useState("")
     const [countryCode, setCountryCode] = useState({ name: "VietNam", callingCode: "+84" })
     const phoneRef = useRef(null);
     const [borderColor, setBorderColor] = useState("white");
+
+    const navigation = useNavigation()
+
     const onChangeText = (value) => {
         setPhoneNumber(value)
     }
@@ -25,7 +29,7 @@ const LoginScreen = () => {
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>Enter Your Number Phone</Text>
-                <Text style={styles.done}>Done</Text>
+                <Text style={styles.done} onPress={() => navigation.navigate("OtpVerification", {phoneNumber: countryCode.callingCode+phoneNumber})}>Done</Text>
             </View>
             <Text style={styles.description}>{"Danh's App will need to verify your phone number (carrier charges may apply)."}</Text>
             <View style={styles.inputContainer}>
@@ -68,6 +72,7 @@ const LoginScreen = () => {
                     }]}
                 />
             </View>
+
             <View style={styles.term}>
                 <Text style={styles.subTitle}>
                     You must be
