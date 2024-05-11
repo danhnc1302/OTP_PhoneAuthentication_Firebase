@@ -9,6 +9,7 @@ import {
 import Icon from 'react-native-vector-icons/AntDesign';
 import { theme } from '../../../theme';
 import { useNavigation } from '@react-navigation/native';
+import OtpInput from '../../components/OtpInput';
 
 const OtpVerificationScreen = ({ route }) => {
 
@@ -37,8 +38,7 @@ const OtpVerificationScreen = ({ route }) => {
 
       <Text style={styles.shortDes}>We have sent you an SMS with a code to the number above</Text>
       <Text style={styles.shortDes}>To complete your phone number verification, please enter the 6-digit activation code</Text>
-      <View style={styles.otpInputContainer}>
-        <TextInput
+        {/* <TextInput
           value={otp.otp1}
           onChangeText={(pin) => {
             setOtp(v => (
@@ -115,8 +115,10 @@ const OtpVerificationScreen = ({ route }) => {
           }}
           maxLength={1}
           style={[styles.otpInput, { borderBottomWidth: otp.otp6 == "" ? 1 : 0 }]}
-        />
-      </View>
+        /> */}
+
+        <OtpInput />
+      
 
       <Text style={[styles.shortDes, { color: "#0E7EF8", fontSize: 17 }]}>Didn't receive a verification code ?</Text>
 
@@ -158,6 +160,7 @@ const styles = StyleSheet.create({
     width: "95%"
   },
   otpInputContainer: {
+    backgroundColor: "orange",
     flexDirection: "row",
     height: 45,
     marginTop: 15,
