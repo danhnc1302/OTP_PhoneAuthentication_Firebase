@@ -8,34 +8,28 @@ import {
 import Icon from 'react-native-vector-icons/AntDesign';
 import { theme } from '../../../theme';
 import { useNavigation } from '@react-navigation/native';
-import { CountryPicker,CountryButton } from "react-native-country-codes-picker";
+import { CountryPicker, CountryButton } from "react-native-country-codes-picker";
 import { TextInput } from 'react-native-gesture-handler';
-import parsePhoneNumber, { parse } from 'libphonenumber-js';
-
+import parsePhoneNumber from 'libphonenumber-js';
+import CustomAlert from '../../components/CustomAlert';
 
 const LoginScreen = () => {
     const [phoneNumber, setPhoneNumber] = useState("")
-    const phoneRef = useRef(null);
-    const [borderColor, setBorderColor] = useState("white");
     const [show, setShow] = useState(false);
     const [countryDetails, setCountryDetails] = useState({
         name: "Viet Nam",
         shortName: "VN"
     });
     const [countryCode, setCountryCode] = useState("+84");
+    const [showAlert, setShowAlert] = useState(false);
 
     const navigation = useNavigation()
 
     const onChangeText = (value) => {
         setPhoneNumber(value)
     }
-    const onChangeCountry = (value) => {
-        setCountryCode(value)
-    }
 
-    console.log(countryCode)
-
-    function ListHeaderComponent({countries, lang, onPress}) {
+    function ListHeaderComponent({ countries, lang, onPress }) {
         return (
             <View
                 style={{
@@ -55,26 +49,28 @@ const LoginScreen = () => {
     }
 
     function isValidPhoneNumber(country_code, number) {
+        console.log("danh")
         try {
             const phone = parsePhoneNumber(number, country_code)
-            console.log(phone)
-            if(phone && phone.isValid()) {
-                console.log("Valid")
+            if (phone && phone.isValid()) {
+                setShowAlert(true)
+            } else if (phone == undefined) {
+                console.log("Phone number is required")
             } else {
-                console.log("Invalid phone number format")
+                console.log("Not a valid number")
             }
-        } catch (error) {   
-            console.log("Invalid phone number format")          
+        } catch (error) {
+            console.log("Invalid phone number format")
         }
     }
+
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>Enter Your Number Phone</Text>
-                <Text style={styles.done} onPress={() => {
+                <Text disabled={ phoneNumber.length >= 9 ? false : true} style={[styles.done, { color: phoneNumber.length >= 9 ? "#0E7EF8" : "#C6C3C7" }]} onPress={() => {
                     isValidPhoneNumber(countryDetails.shortName, phoneNumber)
-                    // navigation.navigate("OtpVerification", { phoneNumber: countryCode.dial_code + phoneNumber })}
                 }}>Done</Text>
             </View>
             <Text style={styles.description}>{"Danh's App will need to verify your phone number (carrier charges may apply)."}</Text>
@@ -138,7 +134,7 @@ const LoginScreen = () => {
                 // when picker button press you will get the country object with dial code
                 ListHeaderComponent={ListHeaderComponent}
                 pickerButtonOnPress={(item) => {
-                        (item);
+                    (item);
                     setCountryCode(item.dial_code)
                     setCountryDetails({
                         name: item.name.en,
@@ -146,7 +142,7 @@ const LoginScreen = () => {
                     })
                     setShow(false);
                 }}
-                popularCountries={["VN","US","GB"]}
+                popularCountries={["VN", "US", "GB"]}
                 onBackdropPress={() => setShow(false)}
                 style={{
                     // Styles for whole modal [View]
@@ -164,6 +160,43 @@ const LoginScreen = () => {
                     },
                 }}
             />
+            {
+                showAlert ? <CustomAlert
+                    title={`NUMBER INFORMATION:\n\n ${countryCode} ${phoneNumber}\n`}
+                    message="Is your phone number above correct?"
+                    messageStyles={{
+                        color: "black"
+                    }}
+                    buttons={[
+                        {
+                            title: "Edit",
+                            style: {},
+                            onPress: () => {
+                                console.log("Edit")
+                            },
+                            textStyle: {
+                                color: "#0E7EF8",
+                            }
+                        },
+                        {
+                            title: "Yes",
+                            style: {},
+                            onPress: () => {
+                                navigation.navigate("OtpVerification", { phoneNumber: countryCode + phoneNumber })
+                            },
+                            textStyle: {
+                                color: "#0E7EF8",
+                            }
+                        }
+                    ]}
+                    visible={showAlert}
+                    onBackPress={() => {
+                        setTimeout(() =>
+                            setShowAlert(false)
+                            , 500)
+                    }}
+                /> : null
+            }
         </View>
     )
 }
@@ -187,7 +220,6 @@ const styles = StyleSheet.create({
         fontWeight: "600"
     },
     done: {
-        color: "#C6C3C7",
         fontSize: 17,
         fontWeight: "600",
         position: "absolute",
