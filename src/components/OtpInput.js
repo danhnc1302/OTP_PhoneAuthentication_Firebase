@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Text,
     View,
     TextInput,
+    Keyboard,
 } from "react-native";
 import PropTypes from "prop-types"
 
@@ -18,6 +19,21 @@ const OtpInput = props => {
 
         return matches.slice(0, inputCount)
     }
+
+    useEffect(() => {
+        const isShow = Keyboard.addListener("keyboardDidShow", () => {
+            setKeyboardStatus(true)
+        })
+
+        const isHide = Keyboard.addListener("keyboardDidHide", () => {
+            setKeyboardStatus(false)
+        })
+
+        return () => {
+            isShow.remove()
+            isHide.remove()
+        }
+    },[])
 
     const [otp, setOtp] = useState(
         getOtpText(
@@ -77,17 +93,22 @@ const OtpInput = props => {
     for (let i = 0; i < props?.inputCount; i++) {
         const inputStyle = [
             {
-                borderColor: props?.activeColor,
                 height: "100%",
-                width: "8%",
-                borderBottomWidth: 2,
-                marginHorizontal: 3,
+                width: "10%",
+                marginHorizontal: 2,
                 fontSize: 14,
                 fontWeight: "600",
-                color: "white",
+                color: "black",
                 alignSelf: "center"
             }
         ]
+
+        if(focusedInput === i) {
+            inputStyle.push({
+                borderColor: props?.activeColor
+            })
+        }
+
         TextInputs.push(
             <TextInput
                 ref={e => {
@@ -99,7 +120,7 @@ const OtpInput = props => {
                 autoCorrect={false}
                 keyboardType={props?.keyboardType}
                 autoFocus={props.autoFocus && i == 0}
-                style={[inputStyle]}
+                style={[inputStyle, props.testInputStyle]}
                 placeholder={"\u23E4"}
                 maxLength={props?.inputCellLength}
                 onFocus={() => onInputFocusEvent(i)}
@@ -107,15 +128,17 @@ const OtpInput = props => {
                 selectionColor={props?.activeColor}
                 onChangeText={(text) => onChangeTextEvent(text, i)}
                 onKeyPress={(key) => onKeyPress(key, i)}
+                placeholderTextColor={
+                    focusedInput === i && keyboardStatus ? props?.activeColor : props?.deactiveColor
+                }
             />
         )
     }
 
     return (
         <View style={{
-            backgroundColor: "orange",
             flexDirection: "row",
-            height: 45,
+            height: 60,
             marginTop: 15,
             width: "80%",
             alignSelf: "center",

@@ -15,6 +15,7 @@ const OtpVerificationScreen = ({ route }) => {
 
   const navigation = useNavigation()
   const { phoneNumber } = route?.params
+  const otpInput = useRef(null)
 
   const [otp, setOtp] = useState({
     otp1: "",
@@ -35,91 +36,16 @@ const OtpVerificationScreen = ({ route }) => {
         </TouchableOpacity>
         <Text style={styles.title}>Edit Number {phoneNumber}</Text>
       </View>
-
       <Text style={styles.shortDes}>We have sent you an SMS with a code to the number above</Text>
       <Text style={styles.shortDes}>To complete your phone number verification, please enter the 6-digit activation code</Text>
-        {/* <TextInput
-          value={otp.otp1}
-          onChangeText={(pin) => {
-            setOtp(v => (
-              {
-                ...v,
-                otp1: pin
-              }
-            ))
-          }}
-          maxLength={1}
-          style={[styles.otpInput, { borderBottomWidth: otp.otp1 == "" ? 1 : 0 }]}
-        />
-        <TextInput
-          value={otp.otp2}
-          onChangeText={(pin) => {
-            setOtp(v => (
-              {
-                ...v,
-                otp2: pin
-              }
-            ))
-          }}
-          maxLength={1}
-          style={[styles.otpInput, { borderBottomWidth: otp.otp2 == "" ? 1 : 0 }]}
-        />
-        <TextInput
-          value={otp.otp3}
-          onChangeText={(pin) => {
-            setOtp(v => (
-              {
-                ...v,
-                otp3: pin
-              }
-            ))
-          }}
-          maxLength={1}
-          style={[styles.otpInput, { borderBottomWidth: otp.otp3 == "" ? 1 : 0 }]}
-        />
-        <TextInput
-          value={otp.otp4}
-          onChangeText={(pin) => {
-            setOtp(v => (
-              {
-                ...v,
-                otp4: pin
-              }
-            ))
-          }}
-          maxLength={1}
-          style={[styles.otpInput, { borderBottomWidth: otp.otp4 == "" ? 1 : 0 }]}
-        />
-        <TextInput
-          value={otp.otp5}
-          onChangeText={(pin) => {
-            setOtp(v => (
-              {
-                ...v,
-                otp5: pin
-              }
-            ))
-          }}
-          maxLength={1}
-          style={[styles.otpInput, { borderBottomWidth: otp.otp5 == "" ? 1 : 0 }]}
-        />
-        <TextInput
-          value={otp.otp6}
-          onChangeText={(pin) => {
-            setOtp(v => (
-              {
-                ...v,
-                otp6: pin
-              }
-            ))
-          }}
-          maxLength={1}
-          style={[styles.otpInput, { borderBottomWidth: otp.otp6 == "" ? 1 : 0 }]}
-        /> */}
-
-        <OtpInput />
-      
-
+      <OtpInput 
+        inputCount={6}
+        ref={e => {otpInput = e}}
+        handleTextChange={text => console.log("OTP -- ", text)}
+        deactiveColor={"black"}
+        activeColor={"#3CB371"}
+        testInputStyle={styles.textStyle}
+      />
       <Text style={[styles.shortDes, { color: "#0E7EF8", fontSize: 17 }]}>Didn't receive a verification code ?</Text>
 
     </View>
@@ -174,5 +100,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     fontSize: 24,
     alignSelf: "center",
+  },
+  textStyle: {
+    color: "black",
+    fontSize: 30,
+    textAlign: "center",
+    fontWeight: "500"
   }
 })
