@@ -12,6 +12,7 @@ import { CountryPicker, CountryButton } from "react-native-country-codes-picker"
 import { TextInput } from 'react-native-gesture-handler';
 import parsePhoneNumber from 'libphonenumber-js';
 import CustomAlert from '../../components/CustomAlert';
+import Toast from '../../utils/Toast';
 
 const LoginScreen = () => {
     const [phoneNumber, setPhoneNumber] = useState("")
@@ -49,18 +50,19 @@ const LoginScreen = () => {
     }
 
     function isValidPhoneNumber(country_code, number) {
-        console.log("danh")
         try {
             const phone = parsePhoneNumber(number, country_code)
             if (phone && phone.isValid()) {
                 setShowAlert(true)
             } else if (phone == undefined) {
-                console.log("Phone number is required")
+                console.log("Enter your phone number")
+
             } else {
-                console.log("Not a valid number")
+                Toast("Not a valid number")
             }
         } catch (error) {
-            console.log("Invalid phone number format")
+            console.log("")
+            Toast("Invalid phone number format")
         }
     }
 
@@ -69,7 +71,7 @@ const LoginScreen = () => {
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>Enter Your Number Phone</Text>
-                <Text disabled={ phoneNumber.length >= 9 ? false : true} style={[styles.done, { color: phoneNumber.length >= 9 ? "#0E7EF8" : "#C6C3C7" }]} onPress={() => {
+                <Text style={[styles.done, { color: phoneNumber.length >= 9 ? "#0E7EF8" : "#C6C3C7" }]} onPress={() => {
                     isValidPhoneNumber(countryDetails.shortName, phoneNumber)
                 }}>Done</Text>
             </View>
