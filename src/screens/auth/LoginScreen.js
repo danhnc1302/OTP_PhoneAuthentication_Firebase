@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     StyleSheet,
     Text,
@@ -15,6 +15,7 @@ import CustomAlert from '../../components/CustomAlert';
 import Toast from '../../utils/Toast';
 
 const LoginScreen = () => {
+    
     const [phoneNumber, setPhoneNumber] = useState("")
     const [show, setShow] = useState(false);
     const [countryDetails, setCountryDetails] = useState({
@@ -23,7 +24,6 @@ const LoginScreen = () => {
     });
     const [countryCode, setCountryCode] = useState("+84");
     const [showAlert, setShowAlert] = useState(false);
-
     const navigation = useNavigation()
 
     const onChangeText = (value) => {
@@ -65,7 +65,6 @@ const LoginScreen = () => {
             Toast("Invalid phone number format")
         }
     }
-
 
     return (
         <View style={styles.container}>

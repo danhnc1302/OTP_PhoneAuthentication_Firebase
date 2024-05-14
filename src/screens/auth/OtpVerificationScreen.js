@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import {
   StyleSheet,
   Text,
@@ -7,15 +7,23 @@ import {
   TextInput
 } from 'react-native'
 import Icon from 'react-native-vector-icons/AntDesign';
-import { theme } from '../../../theme';
 import { useNavigation } from '@react-navigation/native';
 import OtpInput from '../../components/OtpInput';
+import auth from '@react-native-firebase/auth';
+import { useIsFocused } from '@react-navigation/native';
+import Loader from '../../components/Loader';
 
 const OtpVerificationScreen = ({ route }) => {
-
+  const isFocused = useIsFocused()
   const navigation = useNavigation()
   const { phoneNumber } = route?.params
   const otpInput = useRef(null)
+  const [confirm, setConfirm] = useState(null);
+  const [loading, setLoading] = useState({
+    title: "",
+    description: "",
+    isVisible: false
+  })
 
   const [otp, setOtp] = useState({
     otp1: "",
@@ -26,8 +34,48 @@ const OtpVerificationScreen = ({ route }) => {
     otp6: "",
   })
 
-  console.log(otp.otp1)
+    useEffect(() => {
+        if(isFocused) {
+            setTimeout(() => {
+                signInWithPhoneNumber(phoneNumber)
+            }, 2000)
+        }
+    }, [isFocused]);
+    
+    async function signInWithPhoneNumber(phoneNumber) {
+      await auth().signInWithPhoneNumber(phoneNumber).then(confirmation => {
+          setConfirm(confirmation)
+      }).catch(error => {
+          console.log("Error: ", error)
+      });
+     
+  }
 
+  async function confirmCode(code) {
+      try {
+          await confirm.confirm(code);
+          console.log('Otp Verification Successfully');
+      } catch (error) {
+          console.log('Invalid code: ', error);
+      }
+  }
+
+  function showLoader(status, title, message) {
+    if(status) {
+      setLoading(pre => ({
+        ...pre,
+        title: title,
+        description: description,
+        isVisible: status
+      }))
+    } else {
+      setLoading(pre => ({
+        ...pre,
+        isVisible: false
+      }))
+    }
+  }
+  
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -41,12 +89,26 @@ const OtpVerificationScreen = ({ route }) => {
       <OtpInput 
         inputCount={6}
         ref={e => {otpInput = e}}
-        handleTextChange={text => console.log("OTP -- ", text)}
+        handleTextChange={text => {
+          if(text.length == 6) {
+            confirmCode(text)
+          }
+        }}
         deactiveColor={"black"}
         activeColor={"#3CB371"}
         testInputStyle={styles.textStyle}
       />
       <Text style={[styles.shortDes, { color: "#0E7EF8", fontSize: 17 }]}>Didn't receive a verification code ?</Text>
+
+        {
+          loading.isVisible &&
+          <Loader 
+            title={loading.title}
+            message={loading.description}
+            visible={loading.isVisible}
+            onBackPress={() => {}}
+          />
+        }
 
     </View>
   )
