@@ -34,38 +34,64 @@ const OtpVerificationScreen = ({ route }) => {
     otp6: "",
   })
 
-    useEffect(() => {
-        if(isFocused) {
-            setTimeout(() => {
-                signInWithPhoneNumber(phoneNumber)
-            }, 2000)
-        }
-    }, [isFocused]);
-    
-    async function signInWithPhoneNumber(phoneNumber) {
-      await auth().signInWithPhoneNumber(phoneNumber).then(confirmation => {
-          setConfirm(confirmation)
-      }).catch(error => {
-          console.log("Error: ", error)
-      });
-     
+  useEffect(() => {
+    if (isFocused) {
+      setTimeout(() => {
+        showLoader(true, "Requesting an SMS...")
+      }, 1000)
+      setTimeout(() => {
+        signInWithPhoneNumber(phoneNumber)
+      }, 2000)
+    }
+  }, [isFocused]);
+
+  async function signInWithPhoneNumber(phoneNumber) {
+    await auth().signInWithPhoneNumber(phoneNumber).then(confirmation => {
+      setConfirm(confirmation)
+      setLoading(pre => ({
+        ...pre,
+        isVisible: false
+      }))
+    }).catch(error => {
+      console.log("Error: ", error)
+      setLoading(pre => ({
+        ...pre,
+        isVisible: false
+      }))
+    });
+
   }
 
   async function confirmCode(code) {
-      try {
-          await confirm.confirm(code);
-          console.log('Otp Verification Successfully');
-      } catch (error) {
-          console.log('Invalid code: ', error);
-      }
+    try {
+      
+      setTimeout(() => {
+        showLoader(true, "Verification Code", "Your credentials will be securely saved to your iCloud Keychain it enabled")
+      }, 1000)
+      setTimeout(async () => {
+        await confirm.confirm(code);
+        setLoading(pre => ({
+          ...pre,
+          isVisible: false
+        }))
+      console.log("Login successful!");
+      }, 2000)
+
+    } catch (error) {
+      console.log('Invalid code: ', error);
+      setLoading(pre => ({
+        ...pre,
+        isVisible: false
+      }))
+    }
   }
 
-  function showLoader(status, title, message) {
-    if(status) {
+  function showLoader(status, title = "", message = "") {
+    if (status) {
       setLoading(pre => ({
         ...pre,
         title: title,
-        description: description,
+        description: message,
         isVisible: status
       }))
     } else {
@@ -75,7 +101,7 @@ const OtpVerificationScreen = ({ route }) => {
       }))
     }
   }
-  
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -86,11 +112,11 @@ const OtpVerificationScreen = ({ route }) => {
       </View>
       <Text style={styles.shortDes}>We have sent you an SMS with a code to the number above</Text>
       <Text style={styles.shortDes}>To complete your phone number verification, please enter the 6-digit activation code</Text>
-      <OtpInput 
+      <OtpInput
         inputCount={6}
-        ref={e => {otpInput = e}}
+        ref={e => { otpInput = e }}
         handleTextChange={text => {
-          if(text.length == 6) {
+          if (text.length == 6) {
             confirmCode(text)
           }
         }}
@@ -100,15 +126,15 @@ const OtpVerificationScreen = ({ route }) => {
       />
       <Text style={[styles.shortDes, { color: "#0E7EF8", fontSize: 17 }]}>Didn't receive a verification code ?</Text>
 
-        {
-          loading.isVisible &&
-          <Loader 
-            title={loading.title}
-            message={loading.description}
-            visible={loading.isVisible}
-            onBackPress={() => {}}
-          />
-        }
+      {
+        loading.isVisible &&
+        <Loader
+          title={loading.title}
+          message={loading.description}
+          visible={loading.isVisible}
+          onBackPress={() => { }}
+        />
+      }
 
     </View>
   )
